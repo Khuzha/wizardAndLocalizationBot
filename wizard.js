@@ -60,7 +60,7 @@ const superWizard = new WizardScene('super-wizard',
         ]).resize().oneTime())
     )
 
-    session.number = String(message.text || message.contact.phone_number).replace("+", "")
+    session.number = String(message.text || message.contact.phone_number)
     return wizard.next()
   },
 
@@ -81,14 +81,13 @@ const superWizard = new WizardScene('super-wizard',
         .markup(Markup.removeKeyboard(true))
       )
 
-    const locationMessage = await bot.telegram.sendLocation(
-      data.chatId, message.location.latitude, message.location.longitude
-    )
     bot.telegram.sendMessage(
       data.chatId, 
       makeText(i18n.t('newUser'), session),
       Extra
-        .inReplyTo(locationMessage.message_id)
+        .markup(Markup.inlineKeyboard([
+          [Markup.callbackButton(i18n.t('getLocation'), `loc_${message.location.latitude}_${message.location.longitude}`)]
+        ]))  
     )
 
     scene.leave('super-wizard')

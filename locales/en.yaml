@@ -7,6 +7,7 @@ getNumber: 'Press "📱 Send number" or type it in the international format +998
 getLocation: 'Press "📍 Send location" button'
 thanks: 'Thank you!'
 newUser: 'New user: \n\nName: %name% \nNumber: %number%'
+requestLocation: '📍 Get location'
 
 buttons: 
   contacts: 'Contacts'
