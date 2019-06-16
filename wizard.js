@@ -95,7 +95,7 @@ const superWizard = new WizardScene('super-wizard',
         ]))  
     )
 
-    scene.leave('super-wizard')
+    scene.leave()
   }
 
 )
