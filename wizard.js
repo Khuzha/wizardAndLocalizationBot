@@ -52,7 +52,7 @@ const superWizard = new WizardScene('super-wizard',
       i18n.t('getLocation'),
       Extra
         .markup(Markup.keyboard([
-          [Markup.locationRequestButton('buttons.sendLocation')]
+          [Markup.locationRequestButton(i18n.t('buttons.sendLocation'))]
         ]).resize().oneTime())
     )
 
