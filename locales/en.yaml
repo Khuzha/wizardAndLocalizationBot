@@ -1,0 +1,15 @@
+whatDo: 'What do you want to do?'
+contactsButton: 'Contacts'
+signUpButton: 'Sign up'
+ourNumber: 'Our number is 123'
+getName: 'What`s your name? Type it please'
+getNumber: 'Press "📱 Send number" or type it in the international format +998711234567'
+getLocation: 'Press "📍 Send location" button'
+thanks: 'Thank you!'
+newUser: 'New user: \n\nName: %name% \nNumber: %number%'
+
+buttons: 
+  contacts: 'Contacts'
+  signUp: 'Sign up'
+  sendNumber: '📱 Send number'
+  sendLocation: 📍 Send location
