@@ -1,19 +1,7 @@
-const Telegraf = require('telegraf')
-const path = require('path')
 const WizardScene = require('telegraf/scenes/wizard')
 const Markup = require('telegraf/markup')
 const Extra = require('telegraf/extra') 
 const data = require('./data')
-const bot = new Telegraf(data.token)
-const TelegrafI18n = require('telegraf-i18n')
-
-
-const i18n = new TelegrafI18n({
-  defaultLanguage: 'en',
-  allowMissing: false, 
-  directory: path.resolve(__dirname, 'locales')
-})
-
 
 const superWizard = new WizardScene('super-wizard',
 
@@ -26,7 +14,11 @@ const superWizard = new WizardScene('super-wizard',
     return wizard.next()
   },
 
-  ({ wizard, session, message, chat, i18n, replyWithHTML }) => {
+  ({ wizard, session, scene, message, chat, i18n, replyWithHTML }) => {
+    if (message.text == '/start') {
+      return scene.enter('super-wizard')
+    }
+
     if (+chat.id < 0) {
       return
     }
@@ -47,7 +39,11 @@ const superWizard = new WizardScene('super-wizard',
     return wizard.next()
   },
 
-  ({ wizard, session, message, i18n, replyWithHTML }) => {
+  ({ wizard, session, scene, message, i18n, replyWithHTML }) => {
+    if (message.text == '/start') {
+      return scene.enter('super-wizard')
+    }
+
     if (!message.text && !message.contact) {
       return replyWithHTML(i18n.t('getNumber'))
     }
@@ -60,17 +56,21 @@ const superWizard = new WizardScene('super-wizard',
         ]).resize().oneTime())
     )
 
-    session.number = String(message.text || message.contact.phone_number)
+    session.number = String(message.text || message.contact.phone_number).replace("+", "")
     return wizard.next()
   },
 
-  async ({ scene, session, message, i18n, replyWithHTML }) => {
+  async ({ scene, session, message, i18n, replyWithHTML, telegram }) => {
+    if (message.text == '/start') {
+      return scene.enter('super-wizard')
+    }
+
     if (!message.location) {
       return replyWithHTML(
         i18n.t('getLocation'),
         Extra
           .markup(Markup.keyboard([
-            [Markup.locationRequestButton('buttons.sendLocation')]
+            [Markup.locationRequestButton(i18n.t('buttons.sendLocation'))]
           ]).resize().oneTime())
       )
     }
@@ -81,9 +81,14 @@ const superWizard = new WizardScene('super-wizard',
         .markup(Markup.removeKeyboard(true))
       )
 
-    bot.telegram.sendMessage(
+    telegram.sendMessage(
       data.chatId, 
-      makeText(i18n.t('newUser'), session),
+      i18n.t(
+        'newUser', {
+          name: session.name,
+          number: session.number
+        }
+      ),
       Extra
         .markup(Markup.inlineKeyboard([
           [Markup.callbackButton(i18n.t('getLocation'), `loc_${message.location.latitude}_${message.location.longitude}`)]
@@ -92,10 +97,7 @@ const superWizard = new WizardScene('super-wizard',
 
     scene.leave('super-wizard')
   }
-)
 
-function makeText (text, session) {
-  return text.replace('%name%', session.name).replace('%number%', session.number)
-}
+)
 
 module.exports = superWizard
